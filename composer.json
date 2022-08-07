@@ -1,0 +1,63 @@
+{
+    "name": "sof3/chooseplayer",
+    "type": "project",
+    "minimum-stability": "dev",
+    "require": {
+        "pocketmine/pocketmine-mp": "^4.0.0",
+        "sof3/await-generator": "^3.4.2",
+        "sof3/libasynql": "^4.1.0",
+        "dktapps/pmforms": "master"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.2",
+        "phpunit/phpunit": "^9.5",
+        "friendsofphp/php-cs-fixer": "^3.4",
+        "sof3/pharynx": "^0.2.1"
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "dktapps/pmforms",
+                "version": "master",
+                "source": {
+                    "url": "https://github.com/dktapps-pm-pl/pmforms",
+                    "type": "git",
+                    "reference": "master"
+                }
+            }
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "src"
+        ]
+    },
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "SOFe",
+            "email": "sofe2038@gmail.com"
+        }
+    ],
+    "scripts": {
+        "all": [
+            "composer fmt",
+            "composer lint",
+            "composer test",
+            "composer build"
+        ],
+        "fmt": [
+            "php-cs-fixer fix"
+        ],
+        "lint": [
+            "phpstan analyze"
+        ],
+        "test": [
+            "phpunit tests"
+        ],
+        "build": [
+            "php -r 'require \"vendor/autoload.php\"; \\SOFe\\Pharynx\\Main::main();' -- -i=. -p=ChoosePlayer.phar"
+        ]
+    }
+}
