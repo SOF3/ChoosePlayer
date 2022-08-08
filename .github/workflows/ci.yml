@@ -122,6 +122,7 @@ jobs:
           git add plugin.yml
           git add src
           test ! -d resources || git add resources
+          git config --global user.name "github-actions[bot]" && git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -am "${{github.event.head_commit.message}}"
       - name: Push commit
         run: git push -u origin poggit-staging
