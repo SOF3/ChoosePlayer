@@ -35,7 +35,7 @@ WHERE player = :player AND suggester = :suggester AND accepted = :accepted;
 -- #}
 -- #{ count-unique-usage-rate
 -- #  :suggester string
--- #  :accepted iint
-SELECT COUNT(DISTINCT player) FROM history
+-- #  :accepted int
+SELECT COUNT(DISTINCT player) AS cnt FROM history
 WHERE suggester = :suggester AND accepted = :accepted;
 -- #}

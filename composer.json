@@ -2,10 +2,11 @@
     "name": "sof3/chooseplayer",
     "type": "project",
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "pocketmine/pocketmine-mp": "^4.0.0",
         "sof3/await-generator": "^3.4.2",
-        "sof3/libasynql": "^4.1.0",
+        "sof3/libasynql": "^4.1.1",
         "dktapps/pmforms": "master"
     },
     "require-dev": {
@@ -20,6 +21,9 @@
             "package": {
                 "name": "dktapps/pmforms",
                 "version": "master",
+                "autoload": {
+                    "classmap": ["src/"]
+                },
                 "source": {
                     "url": "https://github.com/dktapps-pm-pl/pmforms",
                     "type": "git",
@@ -30,7 +34,8 @@
     ],
     "autoload": {
         "classmap": [
-            "src"
+            "src",
+            "gen"
         ]
     },
     "license": "Apache-2.0",
@@ -42,10 +47,15 @@
     ],
     "scripts": {
         "all": [
+            "composer gen",
             "composer fmt",
             "composer lint",
             "composer test",
             "composer build"
+        ],
+        "gen": [
+            "[ -f libasynql.phar ] || wget -O libasynql.phar https://poggit.pmmp.io/v.dl/poggit/libasynql/libasynql/^4.1.1",
+            "php libasynql.phar fx src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*"
         ],
         "fmt": [
             "php-cs-fixer fix"
@@ -57,7 +67,7 @@
             "phpunit tests"
         ],
         "build": [
-            "php -r 'require \"vendor/autoload.php\"; \\SOFe\\Pharynx\\Main::main();' -- -i=. -p=ChoosePlayer.phar"
+            "php -r 'require \"vendor/autoload.php\"; \\SOFe\\Pharynx\\Main::main();' -- -i=. -p=ChoosePlayer.phar -s gen"
         ]
     }
 }

@@ -11,7 +11,7 @@ use RuntimeException;
 
 final class ChoosePlayer {
     /**
-     * @return Generator<mixed, mixed, mixed, ChoosePlayerResult>
+     * @return Generator<mixed, mixed, mixed, ?ChoosePlayerResult>
      */
     public static function choose(Player $who) : Generator {
         $self = Main::getInstance();

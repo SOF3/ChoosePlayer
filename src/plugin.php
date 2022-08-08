@@ -14,20 +14,15 @@ use poggit\libasynql\DataConnector;
 use poggit\libasynql\libasynql;
 use SOFe\AwaitGenerator\Await;
 use SOFe\AwaitGenerator\Traverser;
-use function array_keys;
 use function array_map;
 use function count;
 use function crc32;
 use function is_int;
-use function strtolower;
 use function time;
 use function uasort;
 
 final class Main extends PluginBase {
     private static ?self $instance = null;
-
-    private DataConnector $db;
-    private int $batchSize = 20;
 
     /**
      * @internal This is not part of the public API.
@@ -42,6 +37,10 @@ final class Main extends PluginBase {
      */
     public array $suggesters = [];
 
+    private DataConnector $db;
+    private Queries $queries;
+    private int $batchSize = 20;
+
     protected function onEnable() : void {
         self::$instance = $this;
 
@@ -52,10 +51,17 @@ final class Main extends PluginBase {
                 "file" => "data.sqlite",
             ],
         ], [
-            "sqlite" => "queries.sql",
+            "sqlite" => ["history.sql"],
         ]);
+        $this->queries = new Queries($this->db);
+        Await::g2c($this->queries->init());
+        $this->db->waitAll();
 
         ChoosePlayer::suggest(new OnlinePlayerSuggester($this->getServer()));
+    }
+
+    protected function onDisable() : void {
+        $this->db->close();
     }
 
     /**
@@ -77,7 +83,7 @@ final class Main extends PluginBase {
             /** @var Suggester $suggester */
             $suggester = $suggesters[$selection];
 
-            $usageId = yield from $this->recordUsage($who, $suggester);
+            $usageId = yield from $this->queries->recordUsage($who->getUniqueId()->toString(), time(), $suggester->getId());
 
             $gen = $suggester->suggest($who);
             if ($gen === null) {
@@ -108,7 +114,7 @@ final class Main extends PluginBase {
                 } catch (TerminateSuggestionsException $_) {
                 }
 
-                yield from $this->recordSelectedUsage($usageId);
+                yield from $this->queries->recordSelectedUsage($usageId);
                 return $result;
             }
         }
@@ -117,8 +123,8 @@ final class Main extends PluginBase {
     private function displayPlayerOptions(Player $player, Traverser $traverser, string $text) : Generator {
         $options = [];
         $suggestions = [];
-        /** @var Suggestion $suggestion */
-        for ($i = 0; $i < $this->batchSize && $traverser->next($suggestion); $i++) {
+        for ($i = 0; $i < $this->batchSize && yield from $traverser->next($suggestion); $i++) {
+            /** @var Suggestion $suggestion */
             $options[] = new MenuOption($suggestion->display);
             $suggestions[] = $suggestion;
         }
@@ -142,10 +148,11 @@ final class Main extends PluginBase {
     }
 
     /**
-     * @return Generator<mixed, mixed, mixed, int|null
+     * @param list<MenuOption> $options
+     * @return Generator<mixed, mixed, mixed, int|null>
      */
     private function asyncMenuForm(Player $player, string $title, string $text, array $options) : Generator {
-        $ret = yield from Await::promise(function($resolve) use ($player, $title,$text,$options) {
+        $ret = yield from Await::promise(function($resolve) use ($player, $title, $text, $options) {
             $form = new MenuForm($title, $text, $options, $resolve, fn() => $resolve(null));
             $player->sendForm($form);
         });
@@ -153,27 +160,6 @@ final class Main extends PluginBase {
             return null;
         }
         return $ret;
-    }
-
-    /**
-     * @return Genreator<mixed, mixed, mixed, int>
-     */
-    private function recordUsage(Player $who, Suggester $suggester) : Generator {
-        [$insertId, $_] = yield from $this->db->asyncInsert("record-usage", [
-            "player" => strtolower($who->getName()),
-            "now" => time(),
-            "suggester" => $suggester->getId(),
-        ]);
-        return $insertId;
-    }
-
-    /**
-     * @return Genreator<mixed, mixed, mixed, void>
-     */
-    private function recordSelectedUsage(int $pk) : Generator {
-        yield from $this->db->asyncChange("record-selected-usage", [
-            "pk" => $pk,
-        ]);
     }
 
     /**
@@ -199,45 +185,29 @@ final class Main extends PluginBase {
         foreach ($scores as $suggesterName => $_) {
             $ret[] = $this->suggesters[$suggesterName];
         }
-        return array_keys($scores);
+        return $ret;
     }
 
     /**
      * @return Generator<mixed, mixed, mixed, Score>
      */
     private function scoreSuggesterFor(string $playerUuid, string $suggesterName) : Generator {
-        $lastAcceptTime = yield from $this->db->asyncSelect("time-since-last-personal-use", [
-            "player" => $playerUuid,
-            "now" => time(),
-            "suggester" => $suggesterName,
-            "accepted" => 1,
-        ]);
+        $lastAcceptTime = (yield from $this->queries->timeSinceLastPersonalUse($playerUuid, time(), $suggesterName, 1))[0]["elapsed"];
         if ($lastAcceptTime !== null) {
             return new Score(Score::CLASS_PERSONAL_LAST_ACCEPT, $lastAcceptTime);
         }
 
-        $lastUseTime = yield from $this->db->asyncSelect("time-since-last-personal-use", [
-            "player" => $playerUuid,
-            "now" => time(),
-            "suggester" => $suggesterName,
-            "accepted" => 0,
-        ]);
+        $lastUseTime = (yield from $this->queries->timeSinceLastPersonalUse($playerUuid, time(), $suggesterName, 0))[0]["elapsed"];
         if ($lastUseTime !== null) {
             return new Score(Score::CLASS_PERSONAL_LAST_USE, $lastUseTime);
         }
 
-        $acceptCount = yield from $this->db->asyncSelect("count-unique-usage-rate", [
-            "suggester" => $suggesterName,
-            "accepted" => 1,
-        ]);
+        $acceptCount = (yield from $this->queries->countUniqueUsageRate($suggesterName, 1))[0]["cnt"];
         if ($acceptCount !== null && $acceptCount > 0) {
             return new Score(Score::CLASS_PUBLIC_FREQUENT_ACCEPT, $acceptCount);
         }
 
-        $useCount = yield from $this->db->asyncSelect("count-unique-usage-rate", [
-            "suggester" => $suggesterName,
-            "accepted" => 0,
-        ]);
+        $useCount = (yield from $this->queries->countUniqueUsageRate($suggesterName, 0))[0]["cnt"];
         if ($useCount !== null && $useCount > 0) {
             return new Score(Score::CLASS_PUBLIC_FREQUENT_USE, $useCount);
         }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d8fc507894df32424c57fe48cae6dbe2",
+    "content-hash": "129f5c17cb3ad4fa9c9a215241ff685d",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -125,7 +125,12 @@
                 "url": "https://github.com/dktapps-pm-pl/pmforms",
                 "reference": "master"
             },
-            "type": "library"
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            }
         },
         {
             "name": "fgrosse/phpasn1",
@@ -1174,16 +1179,16 @@
         },
         {
             "name": "sof3/libasynql",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/poggit/libasynql.git",
-                "reference": "a55ecceb73e6aa99b80bbec2a78aed0c6341170c"
+                "reference": "d1d5818936e458032de93ee1ce0759b1da3c0915"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/poggit/libasynql/zipball/a55ecceb73e6aa99b80bbec2a78aed0c6341170c",
-                "reference": "a55ecceb73e6aa99b80bbec2a78aed0c6341170c",
+                "url": "https://api.github.com/repos/poggit/libasynql/zipball/d1d5818936e458032de93ee1ce0759b1da3c0915",
+                "reference": "d1d5818936e458032de93ee1ce0759b1da3c0915",
                 "shasum": ""
             },
             "require": {
@@ -1207,9 +1212,9 @@
             ],
             "support": {
                 "issues": "https://github.com/poggit/libasynql/issues",
-                "source": "https://github.com/poggit/libasynql/tree/4.1.0"
+                "source": "https://github.com/poggit/libasynql/tree/4.1.1"
             },
-            "time": "2022-05-25T15:45:58+00:00"
+            "time": "2022-08-08T14:06:12+00:00"
         },
         {
             "name": "symfony/polyfill-php81",
