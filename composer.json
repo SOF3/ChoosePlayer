@@ -63,12 +63,15 @@
             "php libasynql.phar fx src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*"
         ],
         "fmt": [
+            "composer gen",
             "php-cs-fixer fix"
         ],
         "lint": [
+            "composer gen",
             "phpstan analyze"
         ],
         "test": [
+            "composer gen",
             "phpunit tests"
         ],
         "build": [
