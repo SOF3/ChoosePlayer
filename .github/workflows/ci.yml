@@ -122,6 +122,6 @@ jobs:
           git add plugin.yml
           git add src
           test ! -d resources || git add resources
-          git commit -am "${github.event.head_commit.message}"
+          git commit -am "${{github.event.head_commit.message}}"
       - name: Push commit
         run: git push -u origin poggit-staging
