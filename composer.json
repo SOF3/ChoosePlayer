@@ -76,10 +76,10 @@
         ],
         "build": [
             "composer gen",
-            "vendor/bin/pharynx -i=. -p=ChoosePlayer.phar -s gen",
-            "php libasynql.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\libasynql\\\\",
-            "php await-generator.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\await_generator\\\\",
-            "php pmforms.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\pmforms\\\\"
+            "php -dphar.readonly=0 vendor/bin/pharynx -i=. -p=ChoosePlayer.phar -s gen",
+            "php -dphar.readonly=0 libasynql.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\libasynql\\\\",
+            "php -dphar.readonly=0 await-generator.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\await_generator\\\\",
+            "php -dphar.readonly=0 pmforms.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\pmforms\\\\"
         ]
     }
 }
