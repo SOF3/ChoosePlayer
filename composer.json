@@ -53,8 +53,13 @@
             "composer test",
             "composer build"
         ],
-        "gen": [
+        "deps": [
             "[ -f libasynql.phar ] || wget -O libasynql.phar https://poggit.pmmp.io/v.dl/poggit/libasynql/libasynql/^4.1.1",
+            "[ -f await-generator.phar ] || wget -O await-generator.phar https://poggit.pmmp.io/v.dl/SOF3/await-generator/await-generator/^3.4.2",
+            "[ -f pmforms.phar ] || wget -O pmforms.phar https://poggit.pmmp.io/v.dl/dktapps-pm-pl/pmforms/pmforms/^2.0.0"
+        ],
+        "gen": [
+            "composer deps",
             "php libasynql.phar fx src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*"
         ],
         "fmt": [
@@ -67,7 +72,11 @@
             "phpunit tests"
         ],
         "build": [
-            "vendor/bin/pharynx -i=. -p=ChoosePlayer.phar -s gen"
+            "composer gen",
+            "vendor/bin/pharynx -i=. -p=ChoosePlayer.phar -s gen",
+            "php libasynql.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\libasynql\\\\",
+            "php await-generator.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\await_generator\\\\",
+            "php pmforms.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\pmforms\\\\"
         ]
     }
 }
