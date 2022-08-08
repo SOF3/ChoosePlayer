@@ -109,10 +109,7 @@ final class Main extends PluginBase {
                 }
 
                 // make sure `finally` blocks are called
-                try {
-                    $traverser->interrupt(new TerminateSuggestionsException);
-                } catch (TerminateSuggestionsException $_) {
-                }
+                yield from $traverser->interrupt(new TerminateSuggestionsException);
 
                 yield from $this->queries->recordSelectedUsage($usageId);
                 return $result;

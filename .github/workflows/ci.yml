@@ -78,7 +78,7 @@ jobs:
       contents: write
     needs: [build-php]
     runs-on: ubuntu-latest
-    if: github.event_name == "push" && github.ref == "refs/heads/master"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     strategy:
       matrix:
         php:
@@ -89,13 +89,14 @@ jobs:
         with:
           php-version: ${{matrix.php}}
           install-path: "../bin"
-      - name: Install pharynx
-        run: wget -O pharynx.phar https://github.com/SOF3/pharynx/releases/download/0.2.1/pharynx.phar
-      - name: php pharynx.phar -i . -p=../output.phar
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer | php
+      - run: composer install
+      - run: composer build
       - uses: actions/upload-artifact@v3
         with:
-          name: output.phar
-          path: ../output.phar
+          name: ChoosePlayer.phar
+          path: ChoosePlayer.phar
 
       - name: Create poggit-staging branch
         run: |
@@ -117,7 +118,7 @@ jobs:
           test ! -f plugin.yml || rm plugin.yml
           test ! -d resources || rm -r resources
           test ! -d src || rm -r src
-          php -r '(new Phar("../output.phar"))->extractTo(".");'
+          php -r '(new Phar("ChoosePlayer.phar"))->extractTo(".");'
           git add plugin.yml
           git add src
           test ! -d resources || git add resources

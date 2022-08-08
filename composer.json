@@ -13,7 +13,7 @@
         "phpstan/phpstan": "^1.2",
         "phpunit/phpunit": "^9.5",
         "friendsofphp/php-cs-fixer": "^3.4",
-        "sof3/pharynx": "^0.2.1"
+        "sof3/pharynx": "^0.2.2"
     },
     "repositories": [
         {
@@ -67,7 +67,7 @@
             "phpunit tests"
         ],
         "build": [
-            "php -r 'require \"vendor/autoload.php\"; \\SOFe\\Pharynx\\Main::main();' -- -i=. -p=ChoosePlayer.phar -s gen"
+            "vendor/bin/pharynx -i=. -p=ChoosePlayer.phar -s gen"
         ]
     }
 }

@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace SOFe\ChoosePlayer;
 
+use Closure;
 use Exception;
 use Generator;
 use pocketmine\player\Player;
 use RuntimeException;
+use SOFe\AwaitGenerator\Await;
 
 final class ChoosePlayer {
     /**
+     * Lets `$who` choose a player.
+     * Returns a generator compatible with await-generator v2/v3.
+     *
      * @return Generator<mixed, mixed, mixed, ?ChoosePlayerResult>
      */
     public static function choose(Player $who) : Generator {
@@ -20,6 +25,23 @@ final class ChoosePlayer {
         }
 
         return yield from $self->chooseImpl($who);
+    }
+
+    /**
+     * Lets `$who` choose a player.
+     *
+     * @param Closure(ChoosePlayerResult): void $then
+     * @param Closure(): void $else
+     */
+    public static function chooseCallback(Player $who, Closure $then, Closure $else) : void {
+        Await::f2c(function() use ($who, $then, $else) : Generator {
+            $result = yield from self::choose($who);
+            if ($result !== null) {
+                $then($result);
+            } else {
+                $else();
+            }
+        });
     }
 
     /**
@@ -94,4 +116,13 @@ final class ChoosePlayerResult {
         public string $uuid,
     ) {
     }
+}
+
+/**
+ * You can use await-generator static methods and constants from this alias
+ * if you don't want to install the virion.
+ *
+ * @extends Await<mixed>
+ */
+class AwaitAlias extends Await {
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "129f5c17cb3ad4fa9c9a215241ff685d",
+    "content-hash": "de05fdc705fefe7aae3e5550a82c6d6b",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -4084,16 +4084,16 @@
         },
         {
             "name": "sof3/pharynx",
-            "version": "0.2.1",
+            "version": "0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SOF3/pharynx.git",
-                "reference": "0d3c2e09d82d72c53f3202f0dd99eff7b21ce5a4"
+                "reference": "fa184feb10e92955b97ec6b0327c34c6055269f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SOF3/pharynx/zipball/0d3c2e09d82d72c53f3202f0dd99eff7b21ce5a4",
-                "reference": "0d3c2e09d82d72c53f3202f0dd99eff7b21ce5a4",
+                "url": "https://api.github.com/repos/SOF3/pharynx/zipball/fa184feb10e92955b97ec6b0327c34c6055269f8",
+                "reference": "fa184feb10e92955b97ec6b0327c34c6055269f8",
                 "shasum": ""
             },
             "require": {
@@ -4104,6 +4104,9 @@
                 "phpstan/phpstan": "^1.7",
                 "phpunit/phpunit": "^9.5.16 <9.5.17"
             },
+            "bin": [
+                "pharynx"
+            ],
             "type": "project",
             "autoload": {
                 "psr-4": {
@@ -4122,9 +4125,9 @@
             ],
             "support": {
                 "issues": "https://github.com/SOF3/pharynx/issues",
-                "source": "https://github.com/SOF3/pharynx/tree/0.2.1"
+                "source": "https://github.com/SOF3/pharynx/tree/0.2.2"
             },
-            "time": "2022-07-17T13:18:57+00:00"
+            "time": "2022-08-08T14:44:47+00:00"
         },
         {
             "name": "symfony/console",
