@@ -110,7 +110,7 @@ jobs:
                 type: plugin
                 compressBuilds: false
                 fullGzip: true
-            EOF
+          EOF
             git add .poggit.yml
           fi
       - name: Create commit
