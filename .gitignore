@@ -1,0 +1,4 @@
+*.cache
+vendor
+*.phar
+gen
