@@ -1,1 +1,4 @@
-
+branches:
+  - poggit-staging
+projects:
+  ChoosePlayer: {}
