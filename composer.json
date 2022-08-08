@@ -60,7 +60,7 @@
         ],
         "gen": [
             "composer deps",
-            "php libasynql.phar fx src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*"
+            "php -dphar.readonly=0 libasynql.phar fx src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*"
         ],
         "fmt": [
             "composer gen",
