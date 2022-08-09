@@ -85,3 +85,19 @@ A few points to note:
         in the async iterator when the player stops selecting.
         You may want to wrap your code with try-finally blocks
         if there are resources you need to close.
+
+## Building
+
+To compile this plugin to phar, you need to use Composer.
+
+```
+composer install
+composer build
+```
+
+The output phar is generated in `hack/ChoosePlayer.phar`.
+
+You can also find development builds in
+[GitHub Actions](https://github.com/SOF3/ChoosePlayer/actions)
+(click into a run page and scroll to bottom)
+or on [Poggit](https://poggit.pmmp.io/ci/SOF3/ChoosePlayer/~).
