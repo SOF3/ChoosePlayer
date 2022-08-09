@@ -146,60 +146,13 @@ use SOFe\ChoosePlayer\libs\await_generator\SOFe\AwaitGenerator\Traverser;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-final class ChoosePlayerResult {
+final class SuggesterOptions {
+    /**
+     * @internal The constructor is not part of the public API.
+     */
     public function __construct(
-        public string $name,
-        public string $uuid,
+        /** @var int $batchSize Number of entries displayed per page. */
+        public int $batchSize,
     ) {
     }
 }

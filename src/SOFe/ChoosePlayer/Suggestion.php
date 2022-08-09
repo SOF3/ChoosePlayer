@@ -8,8 +8,90 @@ use Closure;
 use Exception;
 use Generator;
 use pocketmine\player\Player;
+use pocketmine\Server;
 use RuntimeException;
 use SOFe\ChoosePlayer\libs\await_generator\SOFe\AwaitGenerator\Await;
+use SOFe\ChoosePlayer\libs\await_generator\SOFe\AwaitGenerator\Traverser;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -88,6 +170,10 @@ final class Suggestion {
         public string $uuid,
     ) {
         $this->display = $name;
+    }
+
+    public static function new(string $name, string $uuid) : self {
+        return new self($name, $uuid);
     }
 
     public function setDisplay(string $display) : self {

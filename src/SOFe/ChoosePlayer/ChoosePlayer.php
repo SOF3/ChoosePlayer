@@ -8,23 +8,27 @@ use Closure;
 use Exception;
 use Generator;
 use pocketmine\player\Player;
+use pocketmine\Server;
 use RuntimeException;
 use SOFe\ChoosePlayer\libs\await_generator\SOFe\AwaitGenerator\Await;
+use SOFe\ChoosePlayer\libs\await_generator\SOFe\AwaitGenerator\Traverser;
 
 final class ChoosePlayer {
     /**
      * Lets `$who` choose a player.
      * Returns a generator compatible with await-generator v2/v3.
      *
+     * @param ?Closure(Suggestion): bool $filter filter player suggestions.
+     * @param string $text The subtitle displayed in the MenuForm.
      * @return Generator<mixed, mixed, mixed, ?ChoosePlayerResult>
      */
-    public static function choose(Player $who) : Generator {
+    public static function choose(Player $who, ?Closure $filter = null, string $text = "") : Generator {
         $self = Main::getInstance();
         if ($self === null) {
             throw new RuntimeException("Cannot choose player when ChoosePlayer plugin is disabled");
         }
 
-        return yield from $self->chooseImpl($who);
+        return yield from $self->chooseImpl($who, $text, $filter);
     }
 
     /**
@@ -33,9 +37,9 @@ final class ChoosePlayer {
      * @param Closure(ChoosePlayerResult): void $then
      * @param Closure(): void $else
      */
-    public static function chooseCallback(Player $who, Closure $then, Closure $else) : void {
-        Await::f2c(function() use ($who, $then, $else) : Generator {
-            $result = yield from self::choose($who);
+    public static function chooseCallback(Player $who, Closure $then, Closure $else, ?Closure $filter = null, string $text = "") : void {
+        Await::f2c(function() use ($who, $then, $else, $filter, $text) : Generator {
+            $result = yield from self::choose($who, $filter, $text);
             if ($result !== null) {
                 $then($result);
             } else {

@@ -3,3 +3,14 @@ version: 0.1.0
 api: 4.0.0
 main: SOFe\ChoosePlayer\ChoosePlayer
 author: SOFe
+
+permissions:
+  ChoosePlayer.OnlineSelector:
+    description: Allows selecting online players.
+    default: true
+  ChoosePlayer.OfflineSelector:
+    description: Allows searching offline players by name.
+    default: true
+  ChoosePlayer.RecentSelector:
+    description: Allows selecting recently-seen offline players.
+    default: true
