@@ -1,1 +1,6 @@
+# Maximum number of suggestions to display every page.
+pageSize: 20
 
+# Whether to track player join history.
+# If disabled, offline selector will only provide outdated values.
+trackJoinLog: true

@@ -8,6 +8,8 @@ use Generator;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use SOFe\AwaitGenerator\Traverser;
+use function strtolower;
+use function usort;
 
 final class OnlinePlayerSuggester implements Suggester {
     public function __construct(
@@ -20,11 +22,17 @@ final class OnlinePlayerSuggester implements Suggester {
     }
 
     public function getDisplayName() : string {
-        return "Select from online players";
+        return "Online players";
     }
 
-    public function suggest(Player $who) : Generator {
+    public function testPermission(Player $who) : bool {
+        return $who->hasPermission(Permissions::CHOOSE_PLAYER_ONLINE_SELECTOR);
+    }
+
+    public function suggest(Player $who, SuggesterOptions $options) : Generator {
         $players = $this->server->getOnlinePlayers();
+
+        usort($players, fn(Player $p1, Player $p2) => strtolower($p1->getName()) <=> strtolower($p2->getName()));
 
         foreach ($players as $player) {
             if ($player === $who || !$player->isConnected()) {

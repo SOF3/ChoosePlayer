@@ -54,13 +54,14 @@
             "composer build"
         ],
         "deps": [
-            "[ -f libasynql.phar ] || wget -O libasynql.phar https://poggit.pmmp.io/v.dl/poggit/libasynql/libasynql/^4.1.1",
-            "[ -f await-generator.phar ] || wget -O await-generator.phar https://poggit.pmmp.io/v.dl/SOF3/await-generator/await-generator/^3.4.2",
-            "[ -f pmforms.phar ] || wget -O pmforms.phar https://poggit.pmmp.io/v.dl/dktapps-pm-pl/pmforms/pmforms/^2.0.0"
+            "[ -f hack/libasynql.phar ] || wget -O hack/libasynql.phar https://poggit.pmmp.io/v.dl/poggit/libasynql/libasynql/^4.1.1",
+            "[ -f hack/await-generator.phar ] || wget -O hack/await-generator.phar https://poggit.pmmp.io/v.dl/SOF3/await-generator/await-generator/^3.4.2",
+            "[ -f hack/pmforms.phar ] || wget -O hack/pmforms.phar https://poggit.pmmp.io/v.dl/dktapps-pm-pl/pmforms/pmforms/^2.0.0"
         ],
         "gen": [
             "composer deps",
-            "php -dphar.readonly=0 libasynql.phar fx src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*"
+            "php -dphar.readonly=0 hack/libasynql.phar fx src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*.sql",
+            "php hack/gen-permissions.php"
         ],
         "fmt": [
             "composer gen",
@@ -76,10 +77,10 @@
         ],
         "build": [
             "composer gen",
-            "php -dphar.readonly=0 vendor/bin/pharynx -i=. -p=ChoosePlayer.phar -s gen",
-            "php -dphar.readonly=0 libasynql.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\libasynql\\\\",
-            "php -dphar.readonly=0 await-generator.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\await_generator\\\\",
-            "php -dphar.readonly=0 pmforms.phar ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\pmforms\\\\"
+            "php -dphar.readonly=0 vendor/bin/pharynx -i=. -p=hack/ChoosePlayer.phar -s gen",
+            "php -dphar.readonly=0 hack/libasynql.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\libasynql\\\\",
+            "php -dphar.readonly=0 hack/await-generator.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\await_generator\\\\",
+            "php -dphar.readonly=0 hack/pmforms.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\pmforms\\\\"
         ]
     }
 }

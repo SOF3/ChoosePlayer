@@ -10,8 +10,17 @@ This API method opens a dialog to let player `$chooser` choose a player,
 then returns the name and UUID of the chosen player.
 
 ```php
-public static function \SOFe\ChoosePlayer\ChoosePlayer::chooseCallback($chooser, $onSelect, $onCancel) : \SOFe\ChoosePlayer\ChoosePlayerResult;
+public static function ChoosePlayer::chooseCallback(
+    Player $chooser,
+    Closure $onSelect,
+    Closure $onCancel,
+    Closure $filter = null,
+    string $text = "",
+) : ChoosePlayerResult;
 ```
+
+`$filter` are suggestion filters.
+The `Filters` helper class can be used for creating filters.
 
 `ChoosePlayerResult` has two public fields: `string $name` and `string $uuid`.
 `$name` is the name of the player (which may or may not be in the correct case),
@@ -40,11 +49,11 @@ class Main extends PluginBase {
 
         ChoosePlayer::chooseCallback($sender, function(ChoosePlayerResult $result) use($sender) : void {
             $chosenPlayerName = $result->name;
-            $this->getServer()->addOp($$chosenPlayerName);
+            $this->getServer()->addOp($chosenPlayerName);
             $sender->sendMessage("opped $chosenPlayerName");
         }, function() use($sender) : void {
             $sender->sendMessage("Operation cancelled");
-        })
+        }, Filters::isnt($sender))
 
         return true;
     }

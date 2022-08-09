@@ -96,7 +96,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: ChoosePlayer.phar
-          path: ChoosePlayer.phar
+          path: hack/ChoosePlayer.phar
 
       - name: Create poggit-staging branch
         run: |
@@ -111,6 +111,7 @@ jobs:
                 compressBuilds: false
                 fullGzip: true
           EOF
+            git rm --cached -r .
             git add .poggit.yml
           fi
       - name: Create commit
@@ -118,7 +119,7 @@ jobs:
           test ! -f plugin.yml || rm plugin.yml
           test ! -d resources || rm -r resources
           test ! -d src || rm -r src
-          php -r '(new Phar("ChoosePlayer.phar"))->extractTo(".");'
+          php -r '(new Phar("hack/ChoosePlayer.phar"))->extractTo(".");'
           git add plugin.yml
           git add src
           test ! -d resources || git add resources

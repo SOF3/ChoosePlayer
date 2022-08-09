@@ -8,23 +8,27 @@ use Closure;
 use Exception;
 use Generator;
 use pocketmine\player\Player;
+use pocketmine\Server;
 use RuntimeException;
 use SOFe\AwaitGenerator\Await;
+use SOFe\AwaitGenerator\Traverser;
 
 final class ChoosePlayer {
     /**
      * Lets `$who` choose a player.
      * Returns a generator compatible with await-generator v2/v3.
      *
+     * @param ?Closure(Suggestion): bool $filter filter player suggestions.
+     * @param string $text The subtitle displayed in the MenuForm.
      * @return Generator<mixed, mixed, mixed, ?ChoosePlayerResult>
      */
-    public static function choose(Player $who) : Generator {
+    public static function choose(Player $who, ?Closure $filter = null, string $text = "") : Generator {
         $self = Main::getInstance();
         if ($self === null) {
             throw new RuntimeException("Cannot choose player when ChoosePlayer plugin is disabled");
         }
 
-        return yield from $self->chooseImpl($who);
+        return yield from $self->chooseImpl($who, $text, $filter);
     }
 
     /**
@@ -33,9 +37,9 @@ final class ChoosePlayer {
      * @param Closure(ChoosePlayerResult): void $then
      * @param Closure(): void $else
      */
-    public static function chooseCallback(Player $who, Closure $then, Closure $else) : void {
-        Await::f2c(function() use ($who, $then, $else) : Generator {
-            $result = yield from self::choose($who);
+    public static function chooseCallback(Player $who, Closure $then, Closure $else, ?Closure $filter = null, string $text = "") : void {
+        Await::f2c(function() use ($who, $then, $else, $filter, $text) : Generator {
+            $result = yield from self::choose($who, $filter, $text);
             if ($result !== null) {
                 $then($result);
             } else {
@@ -57,6 +61,71 @@ final class ChoosePlayer {
     }
 }
 
+final class Filters {
+    /**
+     * Returns a filter that only suggest online players.
+     *
+     * @return Closure(Suggestion): bool
+     */
+    public static function onlinePlayer(Server $server) : Closure {
+        return fn(Suggestion $suggestion) => $server->getPlayerByRawUUID($suggestion->uuid)?->isOnline() ?? false;
+    }
+
+    /**
+     * Returns a filter that excludes a specific player.
+     *
+     * @return Closure(Suggestion): bool
+     */
+    public static function isnt(Player $whom) : Closure {
+        $uuid = $whom->getUniqueId()->toString();
+        return fn(Suggestion $suggestion) => $suggestion->uuid !== $uuid;
+    }
+
+    /**
+     * Returns a filter that inverts another filter.
+     *
+     * @param Closure(Suggestion): bool $filter
+     * @return Closure(Suggestion): bool
+     */
+    public static function not(Closure $filter) : Closure {
+        return fn(Suggestion $suggestion) => !$filter($suggestion);
+    }
+
+    /**
+     * Returns a filter that only accepts suggestions satisfying all given filters.
+     *
+     * @param Closure(Suggestion): bool ...$filters
+     * @return Closure(Suggestion): bool
+     */
+    public static function all(Closure ...$filters) : Closure {
+        return function(Suggestion $suggestion) use ($filters) : bool {
+            foreach ($filters as $filter) {
+                if (!$filter($suggestion)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    }
+
+    /**
+     * Returns a filter that accepts suggestions satisfying any of the given filters.
+     *
+     * @param Closure(Suggestion): bool ...$filters
+     * @return Closure(Suggestion): bool
+     */
+    public static function any(Closure ...$filters) : Closure {
+        return function(Suggestion $suggestion) use ($filters) : bool {
+            foreach ($filters as $filter) {
+                if ($filter($suggestion)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+}
+
 interface Suggester {
     /**
      * @return string The identifier for the suggester, used for recording usage history.
@@ -65,6 +134,8 @@ interface Suggester {
 
     public function getDisplayName() : string;
 
+    public function testPermission(Player $who) : bool;
+
     /**
      * Returns an async iterator of suggestions.
      * Returns null if the operation is cancelled.
@@ -72,7 +143,18 @@ interface Suggester {
      * @return ?Generator<Suggestion|mixed, mixed, mixed, void>
      * @see TerminateSuggestionsException
      */
-    public function suggest(Player $who) : ?Generator;
+    public function suggest(Player $who, SuggesterOptions $options) : ?Generator;
+}
+
+final class SuggesterOptions {
+    /**
+     * @internal The constructor is not part of the public API.
+     */
+    public function __construct(
+        /** @var int $batchSize Number of entries displayed per page. */
+        public int $batchSize,
+    ) {
+    }
 }
 
 final class Suggestion {
@@ -88,6 +170,10 @@ final class Suggestion {
         public string $uuid,
     ) {
         $this->display = $name;
+    }
+
+    public static function new(string $name, string $uuid) : self {
+        return new self($name, $uuid);
     }
 
     public function setDisplay(string $display) : self {
@@ -125,4 +211,5 @@ final class ChoosePlayerResult {
  * @extends Await<mixed>
  */
 class AwaitAlias extends Await {
+    public const VALUE = Traverser::VALUE;
 }
