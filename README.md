@@ -78,7 +78,7 @@ A few points to note:
 - `suggest` is an [async iterator](https://sof3.github.io/await-generator/traverser/async-iterators.html).
     - TLDR: Implement the method like a normal await-generator async function
         (it does not have to be async if you don't need to).
-        Simply write `yield $suggestion => Await::VALUE` for each suggestion.
+        Simply write `yield $suggestion => Traverser::VALUE` for each suggestion.
     - Only a small batch of suggestions (20 by default) are displayed at a time.
         if possible, try loading no more than 20 suggestions at a time.
     - ChoosePlayer throws a `TerminateSuggestionsException`
