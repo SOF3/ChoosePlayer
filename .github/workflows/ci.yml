@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [8.0.18]
+        php: 
+          - "8.0.25"
     steps:
       - name: Build and prepare PHP cache
         uses: pmmp/setup-php-action@aa636a4fe0c1c035fd9a3f05e360eadd86e06440
@@ -23,7 +24,7 @@ jobs:
     strategy:
       matrix:
         php:
-          - "8.0.11"
+          - "8.0.25"
     steps:
       - uses: actions/checkout@v3
       - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
@@ -41,7 +42,7 @@ jobs:
     strategy:
       matrix:
         php:
-          - "8.0.11"
+          - "8.0.25"
     steps:
       - uses: actions/checkout@v3
       - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
@@ -60,7 +61,7 @@ jobs:
     strategy:
       matrix:
         php:
-          - "8.0.11"
+          - "8.0.25"
     steps:
       - uses: actions/checkout@v3
       - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
@@ -82,7 +83,7 @@ jobs:
     strategy:
       matrix:
         php:
-          - "8.0.11"
+          - "8.0.25"
     steps:
       - uses: actions/checkout@v3
       - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
