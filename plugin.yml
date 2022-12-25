@@ -14,3 +14,4 @@ permissions:
   ChoosePlayer.RecentSelector:
     description: Allows selecting recently-seen offline players.
     default: true
+    
