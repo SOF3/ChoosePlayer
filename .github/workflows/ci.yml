@@ -20,7 +20,7 @@ jobs:
   fmt:
     name: code style check
     needs: [build-php]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         php:
@@ -38,7 +38,7 @@ jobs:
   phpstan:
     name: phpstan analyze
     needs: [build-php]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         php:
@@ -57,7 +57,7 @@ jobs:
   phpunit:
     name: unit tests
     needs: [build-php]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         php:
@@ -78,7 +78,7 @@ jobs:
     permissions:
       contents: write
     needs: [build-php]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     strategy:
       matrix:
