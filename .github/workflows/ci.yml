@@ -5,10 +5,11 @@ on:
 jobs:
   build-php:
     name: Prepare PHP
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php: [8.0.18]
+        php: 
+          - "8.0.25"
     steps:
       - name: Build and prepare PHP cache
         uses: pmmp/setup-php-action@aa636a4fe0c1c035fd9a3f05e360eadd86e06440
@@ -19,11 +20,11 @@ jobs:
   fmt:
     name: code style check
     needs: [build-php]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         php:
-          - "8.0.11"
+          - "8.0.25"
     steps:
       - uses: actions/checkout@v3
       - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
@@ -37,11 +38,11 @@ jobs:
   phpstan:
     name: phpstan analyze
     needs: [build-php]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         php:
-          - "8.0.11"
+          - "8.0.25"
     steps:
       - uses: actions/checkout@v3
       - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
@@ -56,11 +57,11 @@ jobs:
   phpunit:
     name: unit tests
     needs: [build-php]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         php:
-          - "8.0.11"
+          - "8.0.25"
     steps:
       - uses: actions/checkout@v3
       - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
@@ -77,12 +78,12 @@ jobs:
     permissions:
       contents: write
     needs: [build-php]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     strategy:
       matrix:
         php:
-          - "8.0.11"
+          - "8.0.25"
     steps:
       - uses: actions/checkout@v3
       - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
