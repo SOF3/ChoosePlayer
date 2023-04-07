@@ -5,8 +5,8 @@
     "prefer-stable": true,
     "require": {
         "pocketmine/pocketmine-mp": "^4.0.0",
-        "sof3/await-generator": "^3.4.2",
-        "sof3/libasynql": "^4.1.1",
+        "sof3/await-generator": "^3.4.4",
+        "sof3/libasynql": "^4.1.6",
         "dktapps/pmforms": "master"
     },
     "require-dev": {
@@ -25,7 +25,7 @@
                     "classmap": ["src/"]
                 },
                 "source": {
-                    "url": "https://github.com/dktapps-pm-pl/pmforms",
+                    "url": "https://github.com/SOF3/pmforms",
                     "type": "git",
                     "reference": "master"
                 }
@@ -81,6 +81,10 @@
             "php -dphar.readonly=0 hack/libasynql.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\libasynql\\\\",
             "php -dphar.readonly=0 hack/await-generator.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\await_generator\\\\",
             "php -dphar.readonly=0 hack/pmforms.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\pmforms\\\\"
+        ],
+        "post-install-cmd": [
+            "php vendor/bin/fx.php src 'SOFe\\ChoosePlayer\\Queries' --gen gen --struct 'final class' resources/*.sql",
+            "php hack/gen-permissions.php"
         ]
     }
 }
