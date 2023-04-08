@@ -10,8 +10,8 @@ use Generator;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use RuntimeException;
-use SOFe\ChoosePlayer\libs\_922de0f6858a3004\SOFe\AwaitGenerator\Await;
-use SOFe\ChoosePlayer\libs\_922de0f6858a3004\SOFe\AwaitGenerator\Traverser;
+use SOFe\ChoosePlayer\libs\_2f01549ac286c22b\SOFe\AwaitGenerator\Await;
+use SOFe\ChoosePlayer\libs\_2f01549ac286c22b\SOFe\AwaitGenerator\Traverser;
 
 
 
