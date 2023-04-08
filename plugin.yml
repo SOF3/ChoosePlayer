@@ -1,7 +1,7 @@
 name: ChoosePlayer
 version: 0.1.0
 api: 4.0.0
-main: SOFe\ChoosePlayer\ChoosePlayer
+main: SOFe\ChoosePlayer\Main
 author: SOFe
 
 permissions:
@@ -14,3 +14,4 @@ permissions:
   ChoosePlayer.RecentSelector:
     description: Allows selecting recently-seen offline players.
     default: true
+    

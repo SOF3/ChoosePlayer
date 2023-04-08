@@ -80,7 +80,7 @@ jobs:
       group: pharynx/${{github.ref}}
     needs: [build-php]
     runs-on: ubuntu-20.04
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/pharynx-action')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     strategy:
       matrix:
         php:
