@@ -7,7 +7,7 @@ namespace SOFe\ChoosePlayer;
 use Generator;
 use pocketmine\player\Player;
 use pocketmine\Server;
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\SOFe\AwaitGenerator\Traverser;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\SOFe\AwaitGenerator\Traverser;
 use function strtolower;
 use function usort;
 

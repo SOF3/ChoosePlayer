@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace SOFe\ChoosePlayer;
 
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\dktapps\pmforms\CustomForm;
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\dktapps\pmforms\CustomFormResponse;
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\dktapps\pmforms\element\CustomFormElement;
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\dktapps\pmforms\MenuForm;
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\dktapps\pmforms\MenuOption;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\dktapps\pmforms\CustomForm;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\dktapps\pmforms\CustomFormResponse;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\dktapps\pmforms\element\CustomFormElement;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\dktapps\pmforms\MenuForm;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\dktapps\pmforms\MenuOption;
 use Generator;
 use pocketmine\player\Player;
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\SOFe\AwaitGenerator\Await;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\SOFe\AwaitGenerator\Await;
 use function count;
 use function is_int;
 

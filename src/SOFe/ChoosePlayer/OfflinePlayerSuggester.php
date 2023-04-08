@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SOFe\ChoosePlayer;
 
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\dktapps\pmforms\element;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\dktapps\pmforms\element;
 use Generator;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerLoginEvent;
@@ -12,8 +12,8 @@ use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\form\FormValidationException;
 use pocketmine\player\Player;
 use pocketmine\Server;
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\SOFe\AwaitGenerator\Await;
-use SOFe\ChoosePlayer\libs\_8da02277f176ee7c\SOFe\AwaitGenerator\Traverser;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\SOFe\AwaitGenerator\Await;
+use SOFe\ChoosePlayer\libs\_524de3f98c72a58e\SOFe\AwaitGenerator\Traverser;
 
 use function floor;
 use function sprintf;
