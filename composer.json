@@ -5,31 +5,20 @@
     "prefer-stable": true,
     "require": {
         "pocketmine/pocketmine-mp": "^4.0.0",
-        "sof3/await-generator": "^3.4.2",
-        "sof3/libasynql": "^4.1.1",
-        "dktapps/pmforms": "master"
+        "sof3/await-generator": "^3.5.1",
+        "sof3/libasynql": "^4.1.7",
+        "dktapps/pmforms": "dev-composer"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.2",
         "phpunit/phpunit": "^9.5",
         "friendsofphp/php-cs-fixer": "^3.4",
-        "sof3/pharynx": "^0.2.2"
+        "sof3/pharynx": "^0.3.0"
     },
     "repositories": [
         {
-            "type": "package",
-            "package": {
-                "name": "dktapps/pmforms",
-                "version": "master",
-                "autoload": {
-                    "classmap": ["src/"]
-                },
-                "source": {
-                    "url": "https://github.com/dktapps-pm-pl/pmforms",
-                    "type": "git",
-                    "reference": "master"
-                }
-            }
+            "type": "vcs",
+            "url": "https://github.com/SOF3/pmforms"
         }
     ],
     "autoload": {
@@ -47,20 +36,14 @@
     ],
     "scripts": {
         "all": [
-            "composer gen",
             "composer fmt",
             "composer lint",
             "composer test",
             "composer build"
         ],
-        "deps": [
-            "[ -f hack/libasynql.phar ] || wget -O hack/libasynql.phar https://poggit.pmmp.io/v.dl/poggit/libasynql/libasynql/^4.1.1",
-            "[ -f hack/await-generator.phar ] || wget -O hack/await-generator.phar https://poggit.pmmp.io/v.dl/SOF3/await-generator/await-generator/^3.4.2",
-            "[ -f hack/pmforms.phar ] || wget -O hack/pmforms.phar https://poggit.pmmp.io/v.dl/dktapps-pm-pl/pmforms/pmforms/^2.0.0"
-        ],
         "gen": [
-            "composer deps",
-            "php -dphar.readonly=0 hack/libasynql.phar fx src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*.sql",
+            "composer install",
+            "php -dphar.readonly=0 vendor/bin/fx.php src SOFe\\\\ChoosePlayer\\\\Queries --gen gen --struct 'final class' resources/*.sql",
             "php hack/gen-permissions.php"
         ],
         "fmt": [
@@ -77,10 +60,11 @@
         ],
         "build": [
             "composer gen",
-            "php -dphar.readonly=0 vendor/bin/pharynx -i=. -p=hack/ChoosePlayer.phar -s gen",
-            "php -dphar.readonly=0 hack/libasynql.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\libasynql\\\\",
-            "php -dphar.readonly=0 hack/await-generator.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\await_generator\\\\",
-            "php -dphar.readonly=0 hack/pmforms.phar hack/ChoosePlayer.phar SOFe\\\\ChoosePlayer\\\\libs\\\\pmforms\\\\"
+            "php -dphar.readonly=0 vendor/bin/pharynx -i=. -p=hack/ChoosePlayer.phar -c"
+        ],
+        "post-install-cmd": [
+            "php vendor/bin/fx.php src 'SOFe\\ChoosePlayer\\Queries' --gen gen --struct 'final class' resources/*.sql",
+            "php hack/gen-permissions.php"
         ]
     }
 }

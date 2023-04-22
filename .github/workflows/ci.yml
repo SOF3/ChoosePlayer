@@ -8,11 +8,10 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php: 
-          - "8.0.25"
+        php: [8.2.3]
     steps:
       - name: Build and prepare PHP cache
-        uses: pmmp/setup-php-action@aa636a4fe0c1c035fd9a3f05e360eadd86e06440
+        uses: pmmp/setup-php-action@main
         with:
           php-version: ${{ matrix.php }}
           install-path: "../bin"
@@ -24,10 +23,10 @@ jobs:
     strategy:
       matrix:
         php:
-          - "8.0.25"
+          - "8.2.3"
     steps:
       - uses: actions/checkout@v3
-      - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
+      - uses: pmmp/setup-php-action@main
         with:
           php-version: ${{matrix.php}}
           install-path: "../bin"
@@ -42,10 +41,10 @@ jobs:
     strategy:
       matrix:
         php:
-          - "8.0.25"
+          - "8.2.3"
     steps:
       - uses: actions/checkout@v3
-      - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
+      - uses: pmmp/setup-php-action@main
         with:
           php-version: ${{matrix.php}}
           install-path: "../bin"
@@ -61,10 +60,10 @@ jobs:
     strategy:
       matrix:
         php:
-          - "8.0.25"
+          - "8.2.3"
     steps:
       - uses: actions/checkout@v3
-      - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
+      - uses: pmmp/setup-php-action@main
         with:
           php-version: ${{matrix.php}}
           install-path: "../bin"
@@ -77,54 +76,50 @@ jobs:
     name: build phar
     permissions:
       contents: write
+    concurrency:
+      group: pharynx/${{github.ref}}
     needs: [build-php]
     runs-on: ubuntu-20.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     strategy:
       matrix:
         php:
-          - "8.0.25"
+          - "8.2.3"
     steps:
       - uses: actions/checkout@v3
-      - uses: pmmp/setup-php-action@e232f72a4330a07aae8418e8aa56b64efcdda636
+      - uses: pmmp/setup-php-action@main
         with:
           php-version: ${{matrix.php}}
           install-path: "../bin"
-      - name: Install Composer
-        run: curl -sS https://getcomposer.org/installer | php
-      - run: composer install
-      - run: composer build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ChoosePlayer.phar
-          path: hack/ChoosePlayer.phar
+      - uses: SOF3/pharynx@v0.1
+        id: pharynx
 
-      - name: Create poggit-staging branch
+      - name: Setup staging branch
         run: |
           git fetch origin
           if ! git checkout poggit-staging; then
             git checkout --orphan poggit-staging
             echo <<EOF >.poggit.yml
-            branches: poggit-staging
-            projects:
-              ${{github.repository}}:
-                type: plugin
-                compressBuilds: false
-                fullGzip: true
+          branches: poggit-staging
+          projects:
+            ${{github.repository}}:
+              type: plugin
+              compressBuilds: false
+              fullGzip: false
           EOF
-            git rm --cached -r .
-            git add .poggit.yml
           fi
+          mv .poggit.yml /tmp/.poggit.yml
+          git rm -fr .
+          git clean -dxff
+          mv /tmp/.poggit.yml .poggit.yml
       - name: Create commit
         run: |
-          test ! -f plugin.yml || rm plugin.yml
-          test ! -d resources || rm -r resources
-          test ! -d src || rm -r src
-          php -r '(new Phar("hack/ChoosePlayer.phar"))->extractTo(".");'
-          git add plugin.yml
-          git add src
-          test ! -d resources || git add resources
-          git config --global user.name "github-actions[bot]" && git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -am "${{github.event.head_commit.message}}"
+          cp ${{steps.pharynx.outputs.output-phar}} ChoosePlayer.phar
+          cp -r ${{steps.pharynx.outputs.output-dir}}/* .
+          git add -A
+          git \
+            -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -am "${{github.event.head_commit.message}} (${{github.sha}})"
       - name: Push commit
         run: git push -u origin poggit-staging
